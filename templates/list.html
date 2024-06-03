@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<h5>Application List details:</h5>
+<table>
+  <thead>
+    <th>Name</th>
+    <th>URL</th>
+    <th>price</th>
+    <th>Actions</th>
+    <th> <a href="{% url "App_insert" %}">Add New</a></th>
+  </thead>
+<tbody>
+  {% for i in details %}
+  <tr>
+    <td>{{i.Name}}</td>
+    <td>{{i.URL}}</td>
+    <td>{{i.price}}</td>
+    <td>
+       <button  name="button"> <a href="{% url "App_edit" i.id %}">Update</a></button>
+    <form class="delete-data" action="{% url "App_delete" i.id %}" method="post">
+     {% csrf_token %}
+     <button  name="button">Delete</button>
+    </form>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $(".delete-data").submit(function(event){
+      event.preventDefault();
+      var formdata= $(this);
+      var url = formdata.attr("action");
+      var csrfToken= $('input[name="csrfmiddlewaretoken"]').val();
+      $.ajax({
+        url:url,
+        type:"DELETE",
+        headers:{
+          "X-CSRFTOKEN":csrfToken
+        },
+        data: formdata.serialize(),
+        success: function(response){
+          if (response.status="success"){
+            alert("Deleted succesfully")
+            formdata.closest("tr").remove();
+          }else{
+              alert("Error is :"+ response.errors)
+          }
+        }
+      })
+    })
+  })
+</script>
+
+
+{% endblock content %}

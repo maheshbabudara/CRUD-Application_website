@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<form id="post-form" method="post" enctype="multipart/form-data" autocomplete="off" required>
+  <br><div type = "color" class="m-auto form-control-color"
+        id="GFG_Color" style="background-color:#abdbe3">
+        {% csrf_token %}
+        {{form.as_p}}
+       <button  name="button" class="btn btn-primary">Submit</button> <br>  <br>
+       <a href="{% url "App_list" %}" >Back to list</a>
+  </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#post-form").submit(function(event){
+      event.preventDefault();
+      var formdata= $(this).serialize();
+
+      $.ajax({
+        //Below URL code is for editing and inserting the record details:
+        url:"{% if form.instance.pk %}{% url 'App_edit' form.instance.pk %}{% else %}{% url 'App_edit' 0 %}{% endif %}",
+       // Below code of line is to only insert the details:
+       // "{% url "App_insert" %}",
+        type:"POST",
+        data:formdata,
+        success: function(response){
+          if (response.status==="success"){
+            alert("saved successfully")
+            $("#post-form")[0].reset()
+          }else{
+            alert("error is :"+ JSON.stringify(response.errors))
+
+          }
+        },
+        error: function(response){
+          // For in details Error message use JSON Format message
+          alert("Error occured with Name input"+ JSON.stringify(response.responseJSON.errors))
+          // For Simple Error message use below alert:
+          // alert("Error occured with Name input")
+        }
+      })
+    })
+  })
+
+</script>
+<p> <i>Here's Description about this portal:</i></p>
+<blockquote cite="http://">
+  <em>Social history is a branch of history that focuses on society as a whole, <br>ather than the affairs of state <br> It emphasizes social structures and the interactions <br>between different groups in society, and is sometimes called "history from below". <br>Social history also considers the economic and cultural institutions of a people, and <br>the lived experiences of the past. Historians who write social history are called social histo <br>-ians.
+
+Britannica
+Social history - Britannica
+social history, Branch of history that emphasizes <br>social structures and the interaction of different groups in society rather than affairs of state. <br> An outgrowth of economic history, it expanded as a discipline in the 1960s.
+
+Wikipedia
+Socia <br>-l history - Wikipedia.Any revenue claims need to be supported by proof.
+    <br>This proof can be in video or image format.<br>
+  For 60 years, WWF has worked to help people and nature thrive. <br>
+  As the world's leading conservation organization, WWF works in nearly 100 countries.
+  <br> At every level, we collaborate with people around the world to develop
+  and <br>deliver innovative solutions that protect communities, wildlife,
+  <br>and the places in which they live</em>
+</blockquote><br><br><br><br><br><br>
+
+</form>
+{% endblock content %}
